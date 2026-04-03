@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game 2 - Tish's Arcade</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Berkshire+Swash&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+</head>
+<body>
+
+    <!-- FLOATING DOTS -->
+    <div class="floating-dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="container">
+
+        <!-- SIDE IMAGES -->
+        <img src="images/stars-left.png" class="stars left" alt="">
+        <img src="images/stars-right.png" class="stars right" alt="">
+
+        <!-- BACK BUTTON -->
+        <a href="home-game.html" class="back-btn">← BACK TO ARCADE</a>
+
+        <!-- GAME TITLE -->
+        <h1 class="game-title">FACE GENERATOR</h1>
+
+        <!-- GAME AREA -->
+        <div class="game-container">
+            <div id="game-canvas"></div>
+        </div>
+
+        <!-- INSTRUCTIONS -->
+        <div class="instructions">
+            <h2>HOW TO PLAY</h2>
+            <p>✦ Move mouse to change face size</p>
+            <p>✦ Click and hold for rave mode!</p>
+            <p>✦ Press B for random accessory</p>
+            <p>✦ Press N to remove accessory</p>
+        </div>
+
+    </div>
+
+    <script>
+let faceSize = 200;
+let reye;
+let leye;
+let popup; //bow,hat,icecream
+
+function setup() {
+  let canvas = createCanvas(400, 400);
+  canvas.parent('game-canvas');
+}
+
+function draw() {
+  
+  //rave background!!
+  if (mouseIsPressed) {
+    background(random(255), random(255), random(255));
+  } else {
+    background(0);  // normal background when not pressed
+  }
+  
+  translate(width/2, height/2); //setting axis in the middle
+  
+  //face
+  let diameter = map(mouseX, width, 120, 120, 300); 
+  
+  //face color
+  if (diameter <= 250) {
+    fill(191, 239, 255);
+  } else if (diameter <= 310) {
+    fill(255, 191, 233);
+  } else if (diameter <= 335) {
+    fill(255, 249, 191);
+  } else if (diameter <= 350) {
+    fill(225, 255, 205);
+  } else if (diameter <= 380) {
+    fill(218, 217, 255);
+  }
+  
+  //face command
+  ellipse(0, 0, diameter);
+  
+  // eyes big
+  let eyepos = mouseX; // eye size controlled by mouse
+  let eyeSize = constrain(mouseX, 40, 220);
+  let xeye = 40;
+  let yeye = 30;    
+  reye = random(35, 60);
+  leye = random(0, 50);
+
+  fill(255); // white of the eyes
+  ellipse(-reye, -yeye, eyeSize, eyeSize);
+  ellipse(reye, -yeye, eyeSize, eyeSize);
+
+  // pupils 
+  push();
+  fill(0);
+  let pupilSize = eyeSize * 0.5; 
+  ellipse(-reye, -yeye, pupilSize, pupilSize);
+  ellipse(reye, -yeye, pupilSize, pupilSize);
+  pop();
+  
+  //mouth
+  let mouthwidth = constrain(mouseX, 40, 220);
+  push();
+  strokeWeight(5);
+  noFill();
+  arc(0, 40, mouthwidth, 40, 0, PI); 
+  pop();
+  
+  //tongue
+  if (mouthwidth >= 220) {
+    push();
+    noStroke();
+    fill(255, 100, 150);
+    arc(0, 60, 80, 140, TWO_PI, PI);
+    pop();
+  }
+  
+  // pupils — shiny
+  if (mouthwidth >= 220) {
+    push();
+    fill(255);
+    let pupilShineSize = eyeSize * 0.2;
+    ellipse(-reye - 20, -yeye - 14, pupilShineSize, pupilShineSize);
+    ellipse(reye + 20, -yeye - 14, pupilShineSize, pupilShineSize);
+    pop();
+  }
+  
+  if (diameter <= 80) {
+    fill(255, 191, 233);
+  } 
+
+  // bow
+  if (popup == 1) {
+    push();
+    // Position near the top-left of the face
+    translate(-faceSize/2 - 25, -faceSize/2 - 25);
+    rotate(radians(-20)); // tilt counter-clockwise 20 degrees
+
+    // Bow color
+    fill(255, 100, 180);
+
+    // left loop
+    ellipse(-25, 0, 45, 35);
+    // right loop
+    ellipse(25, 0, 45, 35);
+
+    // center knot
+    fill(255, 150, 200);
+    ellipse(0, 0, 15, 15);
+
+    pop();
+  } else if (popup == 2) {
+    //partyhat
+    push();
+    // Move to top of the head; adjust Y if needed for your face size
+    translate(110, faceSize - 266);  
+    rotate(radians(40)); // tilt counter-clockwise 20 degrees
+
+    // Hat base (triangle)
+    fill(255, 200, 80);                 // hat color
+    triangle(-40, 0, 40, 0, 0, -100);
+
+    // Decorative stripes
+    stroke(255, 100, 150);
+    strokeWeight(4);
+    line(-30, -25, 30, -25);
+    line(-20, -50, 20, -50);
+    noStroke();
+
+    // Pom-pom on top
+    fill(255, 100, 180);
+    ellipse(0, -110, 25, 25);
+
+    pop();
+  }
+  
+  //ice cream
+  if (popup == 3) {
+    push();
+    translate(0, 120);
+
+    // cone
+    fill(230, 180, 100);
+    triangle(-20, 0, 20, 0, 0, 60);
+
+    // scoop 1
+    fill(255, 150, 200);
+    circle(15, -10, 30);
+
+    //scoop 2
+    fill(255, 150, 200);
+    circle(-10, -10, 30);
+  
+    //scoop 3
+    fill(255, 150, 200);
+    circle(0, -32, 30);
+  
+    pop();
+  }
+}
+     
+function keyPressed() {
+  if (key === 'b' || key === 'B') {
+    popup = int(random(1, 4));
+  } else if (key == 'n' || key == 'N') {
+    popup = 0;
+  }
+}
+    </script>
+
+</body>
+</html>
+

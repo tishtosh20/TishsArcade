@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procrastination Game - Tish's Arcade</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Berkshire+Swash&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+</head>
+<body>
+
+    <!-- FLOATING DOTS -->
+    <div class="floating-dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="container">
+
+        <!-- SIDE IMAGES -->
+        <img src="images/stars-left.png" class="stars left" alt="">
+        <img src="images/stars-right.png" class="stars right" alt="">
+
+        <!-- BACK BUTTON -->
+        <a href="home-game.html" class="back-btn">← BACK TO ARCADE</a>
+
+        <!-- GAME TITLE -->
+        <h1 class="game-title">PROCRASTINATION GAME</h1>
+
+        <!-- GAME AREA -->
+        <div class="game-container">
+            <div id="game-canvas"></div>
+        </div>
+
+        <!-- INSTRUCTIONS -->
+        <div class="instructions">
+            <h2>HOW TO PLAY</h2>
+            <p>✦ Click all circles before time runs out!</p>
+            <p>✦ Don't procrastinate!</p>
+            <p>✦ Press R to restart</p>
+        </div>
+
+    </div>
+
+    <script>
+let selectedRow1 = [];
+let selectedRow2 = [];
+let selectedRow3 = [];
+let selectedRow4 = [];
+let timer = 20;
+let hasClicked = false;
+
+function setup() {
+  let canvas = createCanvas(600, 600);
+  canvas.parent('game-canvas');
+  for (let i = 0; i < 12; i++) {
+    selectedRow1[i] = false;
+    selectedRow2[i] = false;
+    selectedRow3[i] = false;
+    selectedRow4[i] = false;
+  }
+}
+
+function draw() {
+  background(0);
+
+  // Row 1
+  for (let a = 0; a < 12; a++) {
+    let x = 20 + a * 50;
+    fill(selectedRow1[a] ? [255, 0, 0] : 255);
+    ellipse(x, 120, 30, 30);
+  }
+
+  // Row 2
+  for (let b = 0; b < 12; b++) {
+    let x = 20 + b * 50;
+    fill(selectedRow2[b] ? [255, 0, 0] : 255);
+    ellipse(x, 200, 30, 30);
+  }
+
+  // Row 3
+  for (let c = 0; c < 12; c++) {
+    let x = 20 + c * 50;
+    fill(selectedRow3[c] ? [255, 0, 0] : 255);
+    ellipse(x, 385, 30, 30);
+  }
+   // Row 4
+  for (let d = 0; d < 12; d++) {
+    let x = 20 + d * 50;
+    fill(selectedRow4[d] ? [255, 0, 0] : 255);
+    ellipse(x, 460, 30, 30);
+  }
+  
+   
+  // --- count down text ---
+  textAlign(CENTER, CENTER);
+  textSize(100);
+  fill(255);
+  text(timer, width / 2, (200 + 385) / 2);
+
+  if (frameCount % 60 === 0 && timer > 0) {
+    timer--;
+  }
+//--------end screens-----
+  
+  if (allCirclesClicked()) {
+    // Green overlay
+    push();
+    noStroke();
+    fill(0, 255, 0);
+    square(0, 0, 600);
+    pop();
+
+    // Text
+    push();
+    fill(0);
+    textAlign(CENTER, CENTER);
+    textSize(50);
+    text("OMG GOOD JOB", width / 2, height / 2);
+    pop();
+
+    return;
+  }
+ 
+ if (timer === 0 && hasClicked) {
+    // Red overlay
+    push();
+    noStroke();
+    fill(255, 0, 0);
+    square(0, 0, 600);
+    pop();
+
+    // Text
+    push();
+    blendMode(BLEND);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(40);
+    text("YOU PROCRASTINATED", width / 2, 540);
+    text("TOO LATE", width / 2, 60);
+    pop();
+
+    // Sad face
+    push();
+    translate(width / 2, height / 2);
+    fill(255);
+    noStroke();
+    ellipse(-40, -20, 20, 20);
+    ellipse(40, -20, 20, 20);
+    noFill();
+    stroke(255);
+    strokeWeight(5);
+    arc(0, 30, 100, 60, PI, TWO_PI);
+    pop();
+
+  } 
+  //----overwhelmed screen---
+  else if (timer === 0 && !hasClicked) {
+    // OVERWHELMED message if no circle clicked
+    push();
+    noStroke();
+    fill(255, 0, 0);
+    square(0, 0, 600);
+    pop();
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(40);
+    text("OVERWHELMED?", width / 2, 310);
+  }
+  
+}
+
+function mousePressed() {
+  
+  if (timer <= 0) return;
+  hasClicked = true;
+  for (let i = 0; i < 12; i++) {
+    let x = 20 + i * 50;
+
+    if (dist(mouseX, mouseY, x, 120) < 10) {
+      selectedRow1[i] = true;
+      return;
+    }
+
+    if (dist(mouseX, mouseY, x, 200) < 10) {
+      selectedRow2[i] = true;
+      return;
+    }
+
+    if (dist(mouseX, mouseY, x, 385) < 10) {
+      selectedRow3[i] = true;
+      return;
+    }
+    if (dist(mouseX, mouseY, x, 460) < 10) {
+      selectedRow4[i] = true;
+      return;
+    }
+  }  
+}
+
+function allCirclesClicked() {
+  return selectedRow1.every(Boolean) &&
+         selectedRow2.every(Boolean) &&
+         selectedRow3.every(Boolean) &&
+         selectedRow4.every(Boolean);
+}
+
+function resetGame() {
+  for (let i = 0; i < 12; i++) {
+    selectedRow1[i] = false;
+    selectedRow2[i] = false;
+    selectedRow3[i] = false;
+    selectedRow4[i] = false;
+  } 
+  timer = 20;
+  hasClicked = false;
+}
+
+function keyPressed() {
+  if (key === 'r' || key === 'R') {
+    resetGame();
+  }
+}
+    </script>
+
+</body>
+</html>
+

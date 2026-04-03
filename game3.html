@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game 3 - Tish's Arcade</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Berkshire+Swash&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+</head>
+<body>
+
+    <!-- FLOATING DOTS -->
+    <div class="floating-dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="container">
+
+        <!-- SIDE IMAGES -->
+        <img src="images/stars-left.png" class="stars left" alt="">
+        <img src="images/stars-right.png" class="stars right" alt="">
+
+        <!-- BACK BUTTON -->
+        <a href="home-game.html" class="back-btn">← BACK TO ARCADE</a>
+
+        <!-- GAME TITLE -->
+        <h1 class="game-title">GAME 3</h1>
+
+        <!-- GAME AREA -->
+        <div class="game-container">
+            <div id="game-canvas"></div>
+        </div>
+
+        <!-- INSTRUCTIONS -->
+        <div class="instructions">
+            <h2>HOW TO PLAY</h2>
+            <p>✦ Click to change blend mode</p>
+            <p>✦ Press C to toggle circles</p>
+            <p>✦ Press R to return to rectangles</p>
+        </div>
+
+    </div>
+
+    <script>
+let blendModes;
+let currentMode = 0;
+let showCircles = false;
+
+function setup() {
+  let canvas = createCanvas(400, 400);
+  canvas.parent('game-canvas');
+  noLoop();
+  blendModes = [BLEND, MULTIPLY, SCREEN, DIFFERENCE, EXCLUSION, OVERLAY];
+}
+
+function draw() {
+  background(255);
+  blendMode(blendModes[currentMode]);
+
+  if (!showCircles) {
+    noStroke();
+    for (let i = 0; i < 50; i++) {
+      fill(i % 2 == 0 ? 'magenta' : 'green');
+      rect(0, (height / 50) * i, width, height / 50);
+    }
+
+    for (let i = 0; i < 50; i++) {
+      fill(i % 2 == 0 ? 'magenta' : color(255, 238, 138));
+      rect(width * 0.2, (height / 50) * i, width * 0.2, height / 50);
+    }
+
+    for (let i = 0; i < 50; i++) {
+      fill(i % 2 == 0 ? color(255, 238, 138) : 'green');
+      rect(width * 0.6, (height / 50) * i, width * 0.2, height / 50);
+    }
+  } else {
+    noStroke();
+    fill(255, 238, 138);
+    circle(width * 0.3, height / 2, 250);
+    fill('magenta');
+    circle(width * 0.5, height / 2, 250);
+    fill('green');
+    circle(width * 0.7, height / 2, 250);
+  }
+}
+
+function mousePressed() {
+  currentMode = (currentMode + 1) % blendModes.length;
+  redraw();
+}
+
+function keyPressed() {
+  if (key === 'c' || key === 'C') {
+    showCircles = !showCircles;
+    redraw();
+  } 
+  
+  if (key === 'r' || key === 'R') {
+    showCircles = false;  // return to rectangles
+    redraw();
+  }
+}
+    </script>
+
+</body>
+</html>
+

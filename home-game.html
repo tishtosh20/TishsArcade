@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tish's Arcade</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Berkshire+Swash&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- FLOATING DOTS -->
+    <div class="floating-dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="container">
+
+        <!-- SIDE IMAGES -->
+        <img src="images/stars-left.png" class="stars left" alt="">
+        <img src="images/stars-right.png" class="stars right" alt="">
+
+        <!-- HEADER TEXT -->
+        <img src="images/title.png" class="title-img" alt="Tish's Arcade">
+
+
+        <!-- MOVING BANNER -->
+        <div class="banner">
+            <marquee behavior="scroll" direction="left" scrollamount="8">
+                WELCOME TO TISH'S ARCADE ✦ PLEASE DON'T BREAK ANYTHING ✦ PRESS GAMES TO PLAY ✦ WELCOME TO TISH'S ARCADE ✦ PLEASE DON'T BREAK ANYTHING ✦ PRESS GAMES TO PLAY ✦ WELCOME TO TISH'S ARCADE ✦ PLEASE DON'T BREAK ANYTHING ✦ PRESS GAMES TO PLAY ✦ WELCOME TO TISH'S ARCADE ✦ PLEASE DON'T BREAK ANYTHING ✦ PRESS GAMES TO PLAY ✦
+            </marquee>
+        </div>
+
+        <!-- DRAWING PANEL - SEPARATE LEFT SECTION -->
+        <div class="draw-panel">
+            <img src="images/ninnten-star.png" class="draw-decor top-left" alt="">
+            <h3 class="draw-title">✏️ DOODLE PAD</h3>
+            <canvas id="drawCanvas" width="150" height="300"></canvas>
+            <div class="draw-controls">
+                <input type="color" id="colorPicker" value="#c896ff" class="color-picker">
+                <button onclick="clearCanvas()" class="clear-btn">CLEAR</button>
+            </div>
+        </div>
+
+        <!-- SPOTIFY CD -->
+        <a href="https://open.spotify.com/playlist/3I175Co8rZGPu62us8G8Hg?si=53b6d7628cc442c9" target="_blank" class="cd-link">
+            <span class="cd-emoji">💿</span>
+        </a>
+
+        <!-- MINI STAR CLICKER GAME -->
+        <div class="mini-game-panel">
+            <img src="images/open-kirb.png" class="mini-game-decor" alt="">
+            <h3 class="mini-game-title">⭐ STAR CLICKER</h3>
+            <div class="mini-game-area" id="starArea">
+                <span class="bouncing-star" id="bouncingStar" onclick="clickStar()">⭐</span>
+            </div>
+            <div class="mini-game-score">
+                <span id="starCount">0</span> / 100
+            </div>
+            <div class="mini-game-msg" id="starMsg"></div>
+        </div>
+
+        <!-- ABOUT ME PANEL -->
+        <div class="about-panel">
+            <h3 class="about-title">ABOUT ME</h3>
+            <span class="about-emoji">🦈</span>
+            <div class="about-content">
+                <p>Welcome to my arcade!</p>
+                <p>Enjoy the wonky p5.js games created by yours truly plus my favourite cool math game!! :3 ✦</p>
+            </div>
+        </div>
+
+        <!-- GAME BOXES -->
+        <section class="games">
+            <a href="game1.html" class="game game-with-thumb">
+                <span class="new-badge">NEW!</span>
+                <img src="images/game1-thumbnail.png" class="game-thumbnail" alt="Octo-Math">
+                <span class="game-label">0cto-Math</span>
+            </a>
+            <a href="game2.html" class="game game-with-thumb">
+                <img src="images/game2-thumbnail.png" class="game-thumbnail" alt="Face Generator">
+                <span class="game-label">Face Generator</span>
+            </a>
+            <a href="game3.html" class="game game-with-thumb">
+                <img src="images/game3-thumbnail.png" class="game-thumbnail" alt="Game 3">
+                <span class="game-label">Optical Illusions</span>
+            </a>
+        </section>
+
+        <section class="games">
+            <a href="game4.html" class="game game-with-thumb">
+                <img src="images/game4-thumbnail.png" class="game-thumbnail" alt="Procrastination Game">
+                <span class="game-label">Procrastination Game</span>
+            </a>
+            <a href="https://www.coolmathgames.com/0-papas-freezeria" target="_blank" class="game game-with-thumb">
+                <img src="images/papas.png" class="game-thumbnail" alt="Papa's Freezeria">
+                <span class="game-label">Papa's Freezeria</span>
+            </a>
+            <button class="game random-game-btn" onclick="goToRandomGame()">
+                <a href="https://youtu.be/q2haS7KhiUI?si=-OyMqEORJK8d7cUo" target="_blank" class="random-game-decor-link">
+                    <img src="images/mystery.png" class="random-game-decor" alt="Mystery">
+                </a>
+                <span class="random-icon">🎲</span>
+                <span class="game-label">Random Game</span>
+            </button>
+        </section>
+
+        <script>
+            function goToRandomGame() {
+                const games = ['game1.html', 'game2.html', 'game3.html', 'game4.html'];
+                const randomGame = games[Math.floor(Math.random() * games.length)];
+                window.location.href = randomGame;
+            }
+
+            // Drawing canvas
+            const canvas = document.getElementById('drawCanvas');
+            const ctx = canvas.getContext('2d');
+            let drawing = false;
+            let lastX = 0;
+            let lastY = 0;
+
+            ctx.fillStyle = '#1a0a1a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#c896ff';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+
+            canvas.addEventListener('mousedown', (e) => {
+                drawing = true;
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (!drawing) return;
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            });
+
+            canvas.addEventListener('mouseup', () => drawing = false);
+            canvas.addEventListener('mouseout', () => drawing = false);
+
+            document.getElementById('colorPicker').addEventListener('change', (e) => {
+                ctx.strokeStyle = e.target.value;
+            });
+
+            function clearCanvas() {
+                ctx.fillStyle = '#1a0a1a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            // Star clicker mini game
+            let starClicks = 0;
+            const star = document.getElementById('bouncingStar');
+            const starArea = document.getElementById('starArea');
+
+            function clickStar() {
+                if (starClicks < 100) {
+                    starClicks++;
+                    document.getElementById('starCount').textContent = starClicks;
+                    
+                    // Move star to random position
+                    const maxX = starArea.offsetWidth - 40;
+                    const maxY = starArea.offsetHeight - 40;
+                    star.style.left = Math.random() * maxX + 'px';
+                    star.style.top = Math.random() * maxY + 'px';
+                    
+                    if (starClicks >= 100) {
+                        document.getElementById('starMsg').textContent = '🎉 YOU WIN!';
+                        star.style.display = 'none';
+                    }
+                }
+            }
+        </script>
+
+    </div>
+
+</body>
+</html>
